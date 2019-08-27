@@ -84,22 +84,28 @@ Then run:
 python generate_vocab.py
 ```
 
+This created vocabulary `vocab.cseten.2k` in `t2t_data` with only 2k subwords containing all languages from parent and child. Note that the size of vocabulary is much smaller than usually as we are dealing with the low-resource child language pair.
 
 ## Train parent model (English-to-Czech)
 
 Now as you prepared vocabulary, you can preprocess dataset with the wordpieces and start parent training. The training would take several days or weeks, thus we skip this step and download already trained parent model:
 
 ```
-TODO
+wget http://ufallab.ms.mff.cuni.cz/~kocmanek/mtm19/parent.tar.gz
+tar -xvzf parent.tar.gz
 ```
 
-However, this pipeline can be used for real life training, therefore following steps cas used to train the parent English-to-Czech model (please beware that parent training data you have are downsampled, for actuall training use whole CzEng 1.7 corpora).
+This model has been trained for TODO.
+
+This pipeline can be used for real life training, therefore following steps cas used to train the parent English-to-Czech model (please beware that parent training data you have are downsampled, for actuall training use whole CzEng 1.7 corpora).
 
 ```
-TODO
+./train_parent.sh
 ```
 
 ## Preparation of data for child (English-to-Estonian)
+
+
 
 ## Transfer parent model
 

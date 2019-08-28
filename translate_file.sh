@@ -1,5 +1,3 @@
-source env-gpu/bin/activate
-
 if [ -z "$MODEL" ] ||  [ -z "$FILE" ]; then echo "Specify if translating by parent or child in MODEL\nUsage: MODEL=child/parent FILE=file_to_trainslate ./decode.sh"; exit 0; fi
 
 

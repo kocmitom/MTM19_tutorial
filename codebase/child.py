@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 from tensor2tensor.data_generators import problem
 from tensor2tensor.data_generators import translate
+from tensor2tensor.utils import registry
 
 _datasets = {
     'train': [["", ("train.src.TODO", "train.trg.TODO")]],

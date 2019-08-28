@@ -87,6 +87,12 @@ python generate_vocab.py
 
 This created vocabulary `vocab.cseten.2k` in `t2t_data` with only 2k subwords containing all languages from parent and child. Note that the size of vocabulary is much smaller than usually as we are dealing with the low-resource child language pair.
 
+Check the wordpieces vocabulary:
+
+```
+less t2t_data/vocab.cseten.2k
+```
+
 ## Train parent model (English-to-Czech)
 
 Now as you prepared vocabulary, you can preprocess dataset with the wordpieces and start parent training. The training would take several days or weeks, thus we skip this step and download already trained parent model:
@@ -99,15 +105,11 @@ tar -xvzf parent.tar.gz
 Note that it will override your vocabulary to make sure that the vocabulary has exactly same subwords as the trained parent.
 This model has been trained for TODO.
 
-This pipeline can be used for real life training, therefore following steps cas used to train the parent English-to-Czech model (please beware that parent training data you have are downsampled, for actuall training use whole CzEng 1.7 corpora).
-
-```
-./train_parent.sh
-```
+This pipeline can be used for real life training, therefore following commant can be used to train the parent English-to-Czech model (please beware that parent training data you have are downsampled, for actual training use whole CzEng 1.7 corpora): `./train_parent.sh`
 
 ## Test performance of parent model
 
-Now that we have parent model trained, we can try to translate English-Czech testset:
+Now that we have parent model trained, we can try to translate English testset:
 
 ```
 MODEL=parent FILE=t2t_datagen/test-newstest2018-encs.src ./translate_file.sh
@@ -126,15 +128,17 @@ cat output.translation | sacrebleu t2t_datagen/test-newstest2018-encs.ref --scor
 ```
 
 
-## Preparation of data for child (English-to-Estonian)
+## Prepare data for child model (English-to-Estonian)
 
 Before training child model, Tensor2Tensor needs to preprocess data. For this we are going to create our own training problem and preprocess data for the training.
 
+First, we define our own problem in directory `codebase` and then preprocess data.
+
 ### Task 2
 
-Open file `codebase/child.py` and modify rows 8 and 9 by providing the correct name of the child training corpora. T2T will look for the corpora in folder `t2t_datagen` where are all temporary files. 
+Open file `codebase/child.py` and modify rows 8 and 9 by providing the correct name of the child training corpora. T2T will look for the corpora in folder `t2t_datagen` where temporary files are stored. 
 
-Furthermore, provide a correct name of vocabulary on the row 16.
+Furthermore, provide a correct name of vocabulary we generated earlier on the row 16.
 
 After that, preprocess the corpus by following command:
 
@@ -146,9 +150,9 @@ It will preprocess the corpus and store it in `t2t_data`.
 
 ## Transfer parent model
 
-At this point we have English-to-Czech model and preprocessed child data. We need to make last step and that is to transfer parameters from parent to child.
+At this point we have English-to-Czech model and preprocessed child data. We need to make last step: transfer parameters from parent to child.
 
-We use feature of tensor2tensor framework, which continue training from the last checkpoint. Therefore we only need to provide the tensor2tensor with the checkpoint to the parent model. 
+We use functionality of tensor2tensor framework, which automatically continue training from the last checkpoint in the training directory. Therefore we need to provide the tensor2tensor with the checkpoint to the parent model. 
 
 ### Task 3
 
@@ -162,7 +166,7 @@ The last step is to train the child model. It is done by running following comma
 train_child_model.sh
 ```
 
-The training is going to take XXX hours to train the model. Note that the training script for the child is optimized to stop at the best training step. If you use this pipeline for real life training, you need to watch the performance on the development set in order to prevent overfitting, which is often seen on low-resource language pairs.
+The training is going to take several hours to train the model. Note that the training script for the child is optimized to stop automatically. If you use this pipeline for real life training, you need to watch the performance on the development set in order to prevent overfitting, which often happens on low-resource language pairs.
 
 ## Evaluate child
 
@@ -174,10 +178,10 @@ MODEL=child FILE=t2t_datagen/test-newstest2018-enet.src ./translate_file.sh
 
 You can change beam size to higher value (for example 4) and obtain better output.
 
-In order to compute BLEU, you can check the output as follows:
+And the BLEU can be computed by:
 
 ```
-cat output.translation | sacrebleu t2t_datagen/test-newstest2018-enet.ref
+cat output.translation | sacrebleu t2t_datagen/test-newstest2018-enet.ref --score-only
 ```
 
 You should obtain TODO BLEU.

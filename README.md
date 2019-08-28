@@ -40,7 +40,7 @@ Before running any of the following commands, you need to have sourced the envir
 
 # Transfer Learning
 
-We are using following naming convention. `Parent` is the model trained on a high-resource language pair. `Child` is the low-resource model.
+We are using following naming convention. *Parent* is the model trained on a high-resource language pair. *Child* is the low-resource model.
 
 In this tutorial we use English-to-Czech as a parent model and English-to-Estonian as a child model.
 
@@ -58,18 +58,18 @@ The Transfer Learning pipeline has following steps:
 
 Training data for the tutorial are from [WMT 2019](http://www.statmt.org/wmt19/translation-task.html).
 
-In order to save time, there are prepared here:
+In order to save time, download prepared data from here:
 
 ```
 wget http://ufallab.ms.mff.cuni.cz/~kocmanek/mtm19/data.tar.gz
 tar -xvzf data.tar.gz
 ```
 
-We are not going to train the parent model, thus the parent training model is reduced to 200k sentences.
+We are not going to train the parent model in the lab, thus the parent training data (CzEng 1.7) are reduced to only 200k sentences.
 
 The child data are 50k sentences randomly selected from English-Estonian corpora.
 
-The development and test sets are from WMT 2019
+The development and test sets are from WMT 2019 News Shared Task.
 
 ## Preparation of vocabulary
 
@@ -85,12 +85,12 @@ Then run:
 python generate_vocab.py
 ```
 
-This created vocabulary `vocab.cseten.2k` in `t2t_data` with only 2k subwords containing all languages from parent and child. Note that the size of vocabulary is much smaller than usually as we are dealing with the low-resource child language pair.
+This created vocabulary `vocab.cseten.wp` in `t2t_data` with only 32k subwords containing all languages from parent and child. Note that we could improve performance by making the vocabulary smaller as noted by Sennrich and Zhang (2019).
 
 Check the wordpieces vocabulary:
 
 ```
-less t2t_data/vocab.cseten.2k
+less t2t_data/vocab.cseten.wp
 ```
 
 ## Train parent model (English-to-Czech)
@@ -100,16 +100,18 @@ Now as you prepared vocabulary, you can preprocess dataset with the wordpieces a
 ```
 wget http://ufallab.ms.mff.cuni.cz/~kocmanek/mtm19/parent.tar.gz
 tar -xvzf parent.tar.gz
+cp t2t_train/parent/vocab.cseten.wp t2t_data/vocab.cseten.wp
 ```
 
-Note that it will override your vocabulary to make sure that the vocabulary has exactly same subwords as the trained parent.
-This model has been trained for TODO.
+This parent model has been trained for 1.7M steps (approximatelly 25 days on single GPU).
 
-This pipeline can be used for real life training, therefore following commant can be used to train the parent English-to-Czech model (please beware that parent training data you have are downsampled, for actual training use whole CzEng 1.7 corpora): `./train_parent.sh`
+Note that we need to override your generated vocabulary with the one used for training the parent model. It is done to make sure that the vocabulary has exactly same subwords as the trained parent model.
+
+This pipeline can be used for real life training, therefore `./train_parent.sh` command can be used to train the parent English-to-Czech model (please beware that parent training data you have at the moment are downsampled, for actual training use whole CzEng 1.7 corpora).
 
 ## Test performance of parent model
 
-Now that we have parent model trained, we can try to translate English testset:
+We have parent model trained, we can try to translate English testset:
 
 ```
 MODEL=parent FILE=t2t_datagen/test-newstest2018-encs.src ./translate_file.sh

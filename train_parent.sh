@@ -1,6 +1,6 @@
 PROBLEM=parent_problem
 MODEL=transformer
-HPARAMS=transformer_base_single_gpu
+HPARAMS=transformer_big_single_gpu
 
 DATA_DIR=t2t_data
 TMP_DIR=t2t_datagen

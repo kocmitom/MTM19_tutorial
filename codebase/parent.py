@@ -17,7 +17,7 @@ _datasets = {
 class parentProblem(translate.TranslateProblem):
     @property
     def vocab_filename(self):
-        return "vocab.cseten.2k"
+        return "vocab.cseten.wp"
 
     def source_data_files(self, dataset_split):
         train = dataset_split == problem.DatasetSplit.TRAIN

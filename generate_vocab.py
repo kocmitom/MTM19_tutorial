@@ -21,4 +21,4 @@ def get_generator():
 
 gen = get_generator()
 print("Generating vocabulary. It will take a moment. Please, read the next section of tutorial.\n\n")
-generator_utils.get_or_generate_vocab_inner("t2t_data", "vocab.cseten.2k", 2048, gen)
+generator_utils.get_or_generate_vocab_inner("t2t_data", "vocab.cseten.wp", 32000, gen)

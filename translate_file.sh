@@ -5,7 +5,7 @@ if [ -z "$MODEL" ] ||  [ -z "$FILE" ]; then echo "Specify if translating by pare
 DATA_DIR=t2t_data
 DATAGEN_DIR=t2t_datagen
 CODEBASE=codebase
-HPARAMS=transformer_base_single_gpu
+HPARAMS=transformer_big_single_gpu
 
 if [ "$MODEL" == "parent" ]; then
     TRAIN_DIR=t2t_train/parent

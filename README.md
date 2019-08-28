@@ -28,7 +28,7 @@ Virtual machine:
 
 ## Virtual Environment Installation
 
-In case you are using private machines, you need to prepare environment:
+First, we need to prepare virtual environment:
 
 ```
 virtualenv --python=/opt/python/3.6.3/bin/python3 env-gpu
@@ -36,7 +36,7 @@ source env-gpu/bin/activate
 pip install tensor2tensor[tensorflow_gpu] sacrebleu
 ```
 
-Before running any of the following commands, you always need to source the environment.
+Before running any of the following commands, you need to have sourced the environment.
 
 # Transfer Learning
 
@@ -115,16 +115,16 @@ Now that we have parent model trained, we can try to translate English testset:
 MODEL=parent FILE=t2t_datagen/test-newstest2018-encs.src ./translate_file.sh
 ```
 
-See the output of the translation in:
+The translation do not use beam search, thus it should translate the file in few minutes. After that, see the output of the translation in:
 
 ```
 less output.translation
 ```
 
-We evaluate the translation by sacreBLEU:
+We evaluate the translation by sacreBLEU. This tool automatically download WMT testset and evaluate on a correct dataset:
 
 ```
-cat output.translation | sacrebleu t2t_datagen/test-newstest2018-encs.ref --score-only
+cat output.translation | sacrebleu -t wmt18 -l en-cs --score-only
 ```
 
 
@@ -143,7 +143,7 @@ Furthermore, provide a correct name of vocabulary we generated earlier on the ro
 After that, preprocess the corpus by following command:
 
 ```
-preprocess_child_corpus.sh
+./preprocess_child_corpus.sh
 ```
 
 It will preprocess the corpus and store it in `t2t_data`.
@@ -158,12 +158,14 @@ We use functionality of tensor2tensor framework, which automatically continue tr
 
 Copy last checkpoint from `t2t_train/parent` into `t2t_train/child`. You need to copy all files except for events\*
 
+If the folder is empty, T2T will train the model from scratch (baseline can be trained by `./train_baseline_model.sh`.
+
 ## Train child model
 
 The last step is to train the child model. It is done by running following command
 
 ```
-train_child_model.sh
+./train_child_model.sh
 ```
 
 The training is going to take several hours to train the model. Note that the training script for the child is optimized to stop automatically. If you use this pipeline for real life training, you need to watch the performance on the development set in order to prevent overfitting, which often happens on low-resource language pairs.
@@ -181,9 +183,10 @@ You can change beam size to higher value (for example 4) and obtain better outpu
 And the BLEU can be computed by:
 
 ```
-cat output.translation | sacrebleu t2t_datagen/test-newstest2018-enet.ref --score-only
+cat output.translation | sacrebleu -t wmt18 -l en-et --score-only
 ```
 
 You should obtain TODO BLEU.
 
 To summarize, you trained English-to-Estonian neural machine transltion with only 50k training data. If trained from scratch withou the transfer learning, we would obtain TODO BLEU. For this reason, we used parent translating English-to-Czech and updated it for the need of child language pair.
+

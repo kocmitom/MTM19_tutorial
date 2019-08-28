@@ -26,7 +26,7 @@ t2t-trainer \
 	  --output_dir=$TRAIN_DIR \
 	  --worker_gpu=1 \
 	  --keep_checkpoint_max=100 \
-	  --hparams='batch_size=4800,max_length=100,learning_rate_schedule=rsqrt_decay,optimizer=Adafactor,learning_rate_warmup_steps=16000'
+	  --hparams='batch_size=2400,max_length=100,learning_rate_schedule=rsqrt_decay,optimizer=Adafactor,learning_rate_warmup_steps=16000'
 
 # worker_gpu specifies number of GPUs
 # keep_checkpoint_max will store latest 100 checkpints

@@ -26,7 +26,7 @@ Virtual machine:
 
 > pass: mtm19
 
-## Virtual Env. Installation
+## Virtual Environment Installation
 
 In case you are using private machines, you need to prepare environment:
 
@@ -105,6 +105,27 @@ This pipeline can be used for real life training, therefore following steps cas 
 ./train_parent.sh
 ```
 
+## Test performance of parent model
+
+Now that we have parent model trained, we can try to translate English-Czech testset:
+
+```
+MODEL=parent FILE=t2t_datagen/test-newstest2018-encs.src ./translate_file.sh
+```
+
+See the output of the translation in:
+
+```
+less output.translation
+```
+
+We evaluate the translation by sacreBLEU:
+
+```
+cat output.translation | sacrebleu t2t_datagen/test-newstest2018-encs.ref --score-only
+```
+
+
 ## Preparation of data for child (English-to-Estonian)
 
 Before training child model, Tensor2Tensor needs to preprocess data. For this we are going to create our own training problem and preprocess data for the training.
@@ -149,12 +170,6 @@ The final model can be tested by following command:
 
 ```
 MODEL=child FILE=t2t_datagen/test-newstest2018-enet.src ./translate_file.sh
-```
-
-Or even the parent model:
-
-```
-MODEL=parent FILE=t2t_datagen/test-newstest2018-encs.src ./translate_file.sh
 ```
 
 You can change beam size to higher value (for example 4) and obtain better output.

@@ -31,7 +31,7 @@ Virtual machine:
 First, we need to prepare virtual environment:
 
 ```
-virtualenv --python=/opt/python/3.6.3/bin/python3 env-gpu
+virtualenv --python=/usr/bin/python env-gpu
 source env-gpu/bin/activate
 pip install tensor2tensor[tensorflow_gpu] sacrebleu
 ```

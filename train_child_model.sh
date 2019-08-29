@@ -25,6 +25,6 @@ t2t-trainer \
 	  --output_dir=$TRAIN_DIR \
 	  --keep_checkpoint_max=100 \
 	  --local_eval_frequency=1000 \
-	  --train_steps=1900000 \
+	  --train_steps=1750000 \
 	  --hparams='batch_size=2400,max_length=100,learning_rate_schedule=rsqrt_decay,optimizer=Adafactor,learning_rate_warmup_steps=16000'
 
